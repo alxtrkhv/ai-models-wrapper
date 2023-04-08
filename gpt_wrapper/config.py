@@ -13,8 +13,6 @@ class Config(BaseModel):
 
 
 def read_config() -> Config:
-    _ensure_directory_exists(FILE_PATH)
-
     try:
         with open(FILE_PATH, "r") as file:
             data = load(file)
@@ -29,6 +27,8 @@ def read_config() -> Config:
 
 
 def update_config(updated_data: dict | Config) -> bool:
+    _ensure_directory_exists(FILE_PATH)
+
     if isinstance(updated_data, Config):
         updated_data = updated_data.dict()
 
