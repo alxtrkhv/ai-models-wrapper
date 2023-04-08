@@ -28,4 +28,5 @@ def logout():
             delete_password(config.APP_NAME, org_name)
 
 
-app()
+if __name__ == "__main__":
+    app()
