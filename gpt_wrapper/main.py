@@ -24,5 +24,10 @@ def logout(are_you_sure: bool = Option(..., prompt=True)):
             delete_password(config.APP_NAME, org_name)
 
 
+@app.command("request")
+def request(message: str):
+    pass
+
+
 if __name__ == "__main__":
     app()
