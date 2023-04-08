@@ -4,7 +4,7 @@ from keyring import get_password, set_password, delete_password
 
 import config
 
-app = Typer()
+app = Typer(pretty_exceptions_show_locals=False)
 
 
 @app.command("login")
