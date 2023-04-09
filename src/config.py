@@ -2,6 +2,7 @@ from json import load, dump
 from pathlib import Path
 
 from pydantic import BaseModel
+from pydantic.utils import deep_update
 
 from .openai.config import OpenAIConfig
 
@@ -33,11 +34,7 @@ def update_config(updated_data: dict | Config) -> bool:
     if isinstance(updated_data, Config):
         updated_data = updated_data.dict()
 
-    current_config = read_config()
-
-    current_config_dict = current_config.dict()
-    current_config_dict.update(updated_data)
-    updated_config = Config(**current_config_dict)
+    updated_config = Config(**deep_update(read_config().dict(), updated_data))
 
     try:
         with open(FILE_PATH, "w") as file:
