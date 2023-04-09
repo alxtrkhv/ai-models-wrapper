@@ -1,8 +1,9 @@
-from json import load, dump
+from json import load
 from pathlib import Path
 
 from pydantic import BaseModel
 from pydantic.utils import deep_update
+from typer import Typer, echo
 
 from .openai.config import OpenAIConfig
 
@@ -34,11 +35,13 @@ def update_config(updated_data: dict | Config) -> bool:
     if isinstance(updated_data, Config):
         updated_data = updated_data.dict()
 
-    updated_config = Config(**deep_update(read_config().dict(), updated_data))
+    updated_config = Config(
+        **deep_update(read_config().dict(exclude_unset=True), updated_data)
+    )
 
     try:
         with open(FILE_PATH, "w") as file:
-            dump(updated_config.dict(), file, indent=2)
+            file.write(updated_config.json(exclude_unset=True, indent=2))
     except Exception as e:
         print(f"Error updating config file '{FILE_PATH}': {e}")
         return False
@@ -51,3 +54,11 @@ def _ensure_directory_exists(file_path: Path) -> None:
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.touch()
         file_path.write_text("{}")
+
+
+config_app = Typer(name="config")
+
+
+@config_app.command()
+def list():
+    echo(read_config().json(indent=2))
