@@ -9,7 +9,7 @@ FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
 
 
 class Config(BaseModel):
-    org_name: str | None
+    org_name: str | None = None
 
 
 def read_config() -> Config:
