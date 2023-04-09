@@ -1,5 +1,13 @@
+from enum import StrEnum
+
 from ..config import read_config
 from ..openai.api import get_api
+
+
+class ChatRoles(StrEnum):
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
 
 
 def single_completion(prompt: str):
@@ -11,13 +19,12 @@ def single_completion(prompt: str):
     config = read_config().chat
 
     completion = api.ChatCompletion.create(
-        n=1,
         model=config.model,
         temperature=config.temperature,
-        max_tokens=config.max_tokens,
+        top_p=config.top_p,
         messages=[
             {
-                "role": "user",
+                "role": ChatRoles.USER,
                 "content": prompt,
             }
         ],
