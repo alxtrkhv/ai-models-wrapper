@@ -8,13 +8,9 @@ console = Console()
 
 
 @chat_app.command()
-def ask(question: str):
-    completion = single_message(question)
-    console.print(
-        f"{completion.usage.prompt_tokens}/{completion.usage.completion_tokens}/{completion.usage.total_tokens}"  # type: ignore
-    )
-    console.print(f"[green]Prompt:\n[/green]{question}")  # type: ignore
-    console.print(f"[cyan]Reply:\n[/cyan]{completion.choices[0].message.content}")  # type: ignore
+def ask(prompt: str):
+    completion = single_message(prompt)
+    output(prompt, completion)
 
 
 @chat_app.command()
@@ -33,11 +29,15 @@ def start():
             completion = multiple_messages(messages)
             messages.append(completion.choices[0].message)  # type: ignore
 
-            console.print(
-                f"{completion.usage.prompt_tokens}/{completion.usage.completion_tokens}/{completion.usage.total_tokens}"  # type: ignore
-            )
-            console.print(f"[green]Prompt:\n[/green]{message}")  # type: ignore
-            console.print(f"[cyan]Reply:\n[/cyan]{completion.choices[0].message.content}")  # type: ignore
+            output(message, completion)
 
     except KeyboardInterrupt:
         pass
+
+
+def output(prompt, completion):
+    console.print(
+        f"{completion.usage.prompt_tokens}/{completion.usage.completion_tokens}/{completion.usage.total_tokens}"  # type: ignore
+    )
+    console.print(f"[green]Prompt:\n[/green]{prompt}")  # type: ignore
+    console.print(f"[cyan]Reply:\n[/cyan]{completion.choices[0].message.content}")  # type: ignore
