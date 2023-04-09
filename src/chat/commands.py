@@ -17,27 +17,30 @@ def ask(prompt: str):
 def start():
     messages = []
 
-    system_message = prompt("System message", default=None)
-    if system_message is not None:
+    system_message = prompt("System message", default="")
+    if len(system_message) > 0:
         messages.append({"role": ChatRoles.SYSTEM, "content": system_message})
 
-    try:
-        while True:
-            message = prompt("Prompt")
+    while True:
+        message = prompt("Prompt", default="")
+        if len(message) > 0:
             messages.append({"role": ChatRoles.USER, "content": message})
+        else:
+            break
 
-            completion = multiple_messages(messages)
-            messages.append(completion.choices[0].message)  # type: ignore
+        completion = multiple_messages(messages)
+        messages.append(completion.choices[0].message)  # type: ignore
 
-            output(message, completion)
-
-    except KeyboardInterrupt:
-        pass
+        output(message, completion)
 
 
 def output(prompt, completion):
+    console.print(f"[green]Prompt:\n[/green]{prompt}")
+    console.line()
+
+    console.print(f"[cyan]Reply:\n[/cyan]{completion.choices[0].message.content}")  # type: ignore
+    console.line()
     console.print(
         f"{completion.usage.prompt_tokens}/{completion.usage.completion_tokens}/{completion.usage.total_tokens}"  # type: ignore
     )
-    console.print(f"[green]Prompt:\n[/green]{prompt}")  # type: ignore
-    console.print(f"[cyan]Reply:\n[/cyan]{completion.choices[0].message.content}")  # type: ignore
+    console.line()
