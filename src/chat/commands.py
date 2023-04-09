@@ -10,5 +10,5 @@ console = Console()
 @chat_app.command()
 def ask(question: str):
     answer = get_response(question)
-    console.print(f"[green]You:[/green] {question}")
-    console.print(f"[cyan]GPT:[/cyan] {answer}")
+    console.print(f"[green]Prompt:\n[/green]{question}")
+    console.print(f"[cyan]Reply:\n[/cyan]{answer}")
