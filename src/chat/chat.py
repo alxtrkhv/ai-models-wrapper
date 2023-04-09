@@ -10,7 +10,7 @@ class ChatRoles(StrEnum):
     SYSTEM = "system"
 
 
-def single_completion(prompt: str):
+def single_message(prompt: str):
     api = get_api()
 
     if api is None:
@@ -28,6 +28,24 @@ def single_completion(prompt: str):
                 "content": prompt,
             }
         ],
+    )
+
+    return completion
+
+
+def multiple_messages(messages: list):
+    api = get_api()
+
+    if api is None:
+        return
+
+    config = read_config().chat
+
+    completion = api.ChatCompletion.create(
+        model=config.model,
+        temperature=config.temperature,
+        top_p=config.top_p,
+        messages=messages,
     )
 
     return completion
