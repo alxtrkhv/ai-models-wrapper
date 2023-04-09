@@ -1,11 +1,8 @@
-from typer import Typer, echo
+from typer import echo
 
-from api import get_api
-
-app = Typer()
+from ..api import get_api
 
 
-@app.command()
 def list_models():
     api = get_api()
 

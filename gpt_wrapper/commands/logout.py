@@ -1,12 +1,9 @@
-from typer import Typer, Option, echo
+from typer import Option, echo
 from keyring import delete_password
 
-from config import read_config, update_config, APP_NAME
-
-app = Typer()
+from ..config import read_config, update_config, APP_NAME
 
 
-@app.command("logout")
 def logout(are_you_sure: bool = Option(..., prompt=True)):
     if are_you_sure is False:
         echo("Skipping logout.")

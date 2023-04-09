@@ -2,7 +2,7 @@ import openai
 from typer import echo
 from keyring import get_password
 
-from config import read_config, APP_NAME
+from .config import read_config, APP_NAME
 
 
 def get_api():

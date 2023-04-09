@@ -1,10 +1,5 @@
-from typer import Typer
-
-from api import get_api
-
-app = Typer()
+from ..api import get_api
 
 
-@app.command("request")
 def request(message: str):
     api = get_api()
