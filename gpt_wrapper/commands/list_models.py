@@ -8,6 +8,7 @@ app = Typer()
 @app.command()
 def list_models():
     api = get_api()
+
     if api is None:
         return
 
