@@ -3,12 +3,14 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-APP_NAME = "com.alxtrkhv.gpt_wrapper"
+from .openai.config import OpenAIConfig
+
+APP_NAME = "com.alxtrkhv.ai-models-wrapper"
 FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
 
 
 class Config(BaseModel):
-    org_name: str | None = None
+    open_ai: OpenAIConfig
 
 
 def read_config() -> Config:
@@ -16,10 +18,10 @@ def read_config() -> Config:
         with open(FILE_PATH, "r") as file:
             data = load(file)
     except FileNotFoundError:
-        return Config()
+        return Config()  # type: ignore
     except Exception as e:
         print(f"Error reading config file '{FILE_PATH}': {e}")
-        return Config()
+        return Config()  # type: ignore
 
     config = Config(**data)
     return config
