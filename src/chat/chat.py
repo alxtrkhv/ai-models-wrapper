@@ -8,7 +8,7 @@ def get_response(prompt: str):
     if api is None:
         return
 
-    config = read_config().open_ai.chat
+    config = read_config().chat
 
     completion = api.ChatCompletion.create(
         n=1,

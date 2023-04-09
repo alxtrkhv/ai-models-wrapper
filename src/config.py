@@ -6,6 +6,7 @@ from pydantic.utils import deep_update
 from typer import Typer, echo
 
 from .openai.config import OpenAIConfig
+from .chat.config import ChatConfig
 
 APP_NAME = "com.alxtrkhv.ai-models-wrapper"
 FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
@@ -13,6 +14,7 @@ FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
 
 class Config(BaseModel):
     open_ai: OpenAIConfig = OpenAIConfig()
+    chat: ChatConfig = ChatConfig()
 
 
 def read_config() -> Config:
