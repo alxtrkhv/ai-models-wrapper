@@ -19,6 +19,10 @@ def load_commands():
             app.registered_commands += module.app.registered_commands
 
 
-if __name__ == "__main__":
+def run():
     load_commands()
     app()
+
+
+if __name__ == "__main__":
+    run()
