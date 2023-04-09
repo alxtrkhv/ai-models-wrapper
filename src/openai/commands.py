@@ -13,7 +13,7 @@ def login(
     organization_id: str = Option(..., prompt=True),
     token: str = Option(..., prompt=True, hide_input=True),
 ):
-    update_config({"org_name": organization_id})
+    update_config({"open_ai": {"organization_id": organization_id}})
     set_password(OPEN_AI_KEYRING, organization_id, token)
 
     echo("Logged in successfully.")
@@ -30,7 +30,7 @@ def logout(are_you_sure: bool = Option(..., prompt=True)):
     if organization_id is None:
         return
 
-    update_config({"org_name": None})
+    update_config({"open_ai": {"organization_id": None}})
     delete_password(OPEN_AI_KEYRING, organization_id)
 
     echo("Logged out successfully.")

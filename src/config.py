@@ -10,7 +10,7 @@ FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
 
 
 class Config(BaseModel):
-    open_ai: OpenAIConfig
+    open_ai: OpenAIConfig = OpenAIConfig()
 
 
 def read_config() -> Config:
