@@ -2,7 +2,7 @@ from ..config import read_config
 from ..openai.api import get_api
 
 
-def get_response(prompt: str):
+def single_completion(prompt: str):
     api = get_api()
 
     if api is None:
@@ -23,4 +23,4 @@ def get_response(prompt: str):
         ],
     )
 
-    return completion.choices[0].message.content  # type: ignore
+    return completion
