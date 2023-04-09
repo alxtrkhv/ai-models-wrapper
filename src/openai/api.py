@@ -9,7 +9,7 @@ from ..config import read_config
 def get_api():
     org_id = read_config().open_ai.organization_id
     if org_id is None:
-        echo("Please login.")
+        echo("Please login to OpenAI API.")
         return
 
     api = openai
