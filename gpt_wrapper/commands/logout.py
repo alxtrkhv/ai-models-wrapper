@@ -1,4 +1,4 @@
-from typer import Typer, Option
+from typer import Typer, Option, echo
 from keyring import delete_password
 
 from config import read_config, update_config, APP_NAME
@@ -9,6 +9,7 @@ app = Typer()
 @app.command("logout")
 def logout(are_you_sure: bool = Option(..., prompt=True)):
     if are_you_sure is False:
+        echo("Skipping logout.")
         return
 
     org_name = read_config().org_name
@@ -18,3 +19,5 @@ def logout(are_you_sure: bool = Option(..., prompt=True)):
 
     update_config({"org_name": None})
     delete_password(APP_NAME, org_name)
+
+    echo("Logged out successfully.")
