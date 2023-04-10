@@ -21,6 +21,7 @@ console = Console()
 
 
 def completion_output(completion, prompt):
+    console.line()
     console.print(f"[{you_color}]Prompt:\n[/{you_color}]{prompt}")
     console.line()
 
