@@ -5,7 +5,7 @@ from ..config import read_config
 from ..openai.api import get_api
 
 
-class ChatRoles(StrEnum):
+class MessageRole(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
     SYSTEM = "system"
@@ -18,23 +18,23 @@ def conversation(
 ):
     system_message = system_message_call()
     if system_message:
-        messages.append({"role": ChatRoles.SYSTEM, "content": system_message})
+        messages.append(message(MessageRole.SYSTEM, system_message))
 
     while True:
-        message = user_message_call()
-        if not message:
+        user_message = user_message_call()
+        if not user_message:
             break
 
-        messages.append({"role": ChatRoles.USER, "content": message})
+        messages.append(message(MessageRole.USER, user_message))
 
-        yield (multiple_messages(messages), message)
-
-
-def single_message(message: str):
-    return multiple_messages([{"role": ChatRoles.USER, "content": message}])
+        yield (contextful_completion(messages), user_message)
 
 
-def multiple_messages(messages: list):
+def contextless_completion(message: str):
+    return contextful_completion([{"role": MessageRole.USER, "content": message}])
+
+
+def contextful_completion(messages: list):
     api = get_api()
 
     if api is None:
@@ -50,3 +50,7 @@ def multiple_messages(messages: list):
     )
 
     return completion
+
+
+def message(role: MessageRole, content: str):
+    return {"role": role, "content": content}

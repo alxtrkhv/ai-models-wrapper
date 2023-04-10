@@ -1,18 +1,23 @@
 from rich.console import Console
 from typer import prompt
 
+
+system_message_request = "Setup (system message)"
+user_message_request = "Prompt"
+
+
+def system_message_prompt():
+    return prompt(system_message_request, default="")
+
+
+def user_message_prompt():
+    return prompt(user_message_request, default="")
+
+
 you_color = "green"
 gpt_color = "cyan"
 
 console = Console()
-
-
-def system_message_prompt():
-    return prompt("Setup (system message)", default="")
-
-
-def user_message_prompt():
-    return prompt("Prompt:", default="")
 
 
 def completion_output(completion, prompt):

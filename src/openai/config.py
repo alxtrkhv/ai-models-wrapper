@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from ..chat.config import ChatConfig
-
 OPEN_AI_KEYRING = "Open AI API"
 
 

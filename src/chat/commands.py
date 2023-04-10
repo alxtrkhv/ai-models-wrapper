@@ -1,6 +1,6 @@
 from typer import Typer
 
-from .chat import single_message, conversation
+from .chat import contextless_completion, conversation
 from .view import completion_output, system_message_prompt, user_message_prompt
 
 chat_app = Typer(name="chat")
@@ -8,7 +8,7 @@ chat_app = Typer(name="chat")
 
 @chat_app.command()
 def ask(prompt: str):
-    completion_output(single_message(prompt), prompt)
+    completion_output(contextless_completion(prompt), prompt)
 
 
 @chat_app.command()
