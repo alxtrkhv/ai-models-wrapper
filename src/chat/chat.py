@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Callable
 
 from ..config import read_config
 from ..openai.api import get_api
@@ -10,27 +11,27 @@ class ChatRoles(StrEnum):
     SYSTEM = "system"
 
 
-def single_message(prompt: str):
-    api = get_api()
+def conversation(
+    messages: list[dict],
+    system_message_call: Callable[..., str],
+    user_message_call: Callable[..., str],
+):
+    system_message = system_message_call()
+    if system_message:
+        messages.append({"role": ChatRoles.SYSTEM, "content": system_message})
 
-    if api is None:
-        return
+    while True:
+        message = user_message_call()
+        if not message:
+            break
 
-    config = read_config().chat
+        messages.append({"role": ChatRoles.USER, "content": message})
 
-    completion = api.ChatCompletion.create(
-        model=config.model,
-        temperature=config.temperature,
-        top_p=config.top_p,
-        messages=[
-            {
-                "role": ChatRoles.USER,
-                "content": prompt,
-            }
-        ],
-    )
+        yield (multiple_messages(messages), message)
 
-    return completion
+
+def single_message(message: str):
+    return multiple_messages([{"role": ChatRoles.USER, "content": message}])
 
 
 def multiple_messages(messages: list):
