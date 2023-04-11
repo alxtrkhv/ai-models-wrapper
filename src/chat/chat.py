@@ -27,7 +27,10 @@ def conversation(
 
         messages.append(message(MessageRole.USER, user_message))
 
-        yield (contextful_completion(messages), user_message)
+        completion = contextful_completion(messages)
+        messages.append(completion.choices[0].message)  # type: ignore
+
+        yield (completion, user_message)
 
 
 def contextless_completion(message: str):
