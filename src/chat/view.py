@@ -1,4 +1,6 @@
 from rich.console import Console
+from rich.padding import Padding
+
 from typer import prompt
 
 
@@ -14,21 +16,30 @@ def user_message_prompt():
     return prompt(user_message_request, default="")
 
 
-you_color = "green"
-gpt_color = "cyan"
-
 console = Console()
+
+you_color = "green"
+you_prompt = f"[{you_color}]Prompt:[/{you_color}]"
+
+gpt_color = "cyan"
+gpt_prompt = f"[{gpt_color}]Reply:[/{gpt_color}]"
+
+indent = 2
 
 
 def completion_output(completion, prompt):
-    console.line()
-    console.print(f"[{you_color}]Prompt:\n[/{you_color}]{prompt}")
-    console.line()
+    usage = completion.usage
+    content = completion.choices[0].message.content
 
-    console.print(f"[{gpt_color}]Reply:\n[/{gpt_color}]{completion.choices[0].message.content}")  # type: ignore
-    console.line()
+    console.print(Padding(you_prompt, (1, 0, 0, 0)))
+    console.print(Padding(prompt, (0, 0, 1, indent)))
+
+    console.print(gpt_prompt)
+    console.print(Padding(content, (0, 0, 1, indent)))
 
     console.print(
-        f"{completion.usage.prompt_tokens}/{completion.usage.completion_tokens}/{completion.usage.total_tokens}"  # type: ignore
+        Padding(
+            f"{usage.prompt_tokens}/{usage.completion_tokens}/{usage.total_tokens}",
+            (1, 0),
+        )
     )
-    console.line()
