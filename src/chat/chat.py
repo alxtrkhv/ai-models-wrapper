@@ -33,8 +33,8 @@ def conversation(
         yield (completion, user_message)
 
 
-def contextless_completion(message: str):
-    return contextful_completion([{"role": MessageRole.USER, "content": message}])
+def contextless_completion(input: str):
+    return contextful_completion([message(MessageRole.USER, input)])
 
 
 def contextful_completion(messages: list):
