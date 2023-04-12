@@ -7,6 +7,7 @@ from typer import Typer, echo
 
 from .openai.config import OpenAIConfig
 from .chat.config import ChatConfig
+from .storage import ensure_file_exists
 
 APP_NAME = "com.alxtrkhv.ai-models-wrapper"
 FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
@@ -32,7 +33,7 @@ def read_config() -> Config:
 
 
 def update_config(updated_data: dict | Config) -> bool:
-    _ensure_directory_exists(FILE_PATH)
+    ensure_file_exists(FILE_PATH)
 
     if isinstance(updated_data, Config):
         updated_data = updated_data.dict()
@@ -49,13 +50,6 @@ def update_config(updated_data: dict | Config) -> bool:
         return False
 
     return True
-
-
-def _ensure_directory_exists(file_path: Path) -> None:
-    if file_path.exists() is False:
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.touch()
-        file_path.write_text("{}")
 
 
 config_app = Typer(name="config")

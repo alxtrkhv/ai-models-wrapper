@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.padding import Padding
 
-from typer import prompt
+from typer import prompt, confirm
 
 
 system_message_request = "Setup (system message)"
@@ -43,3 +43,10 @@ def completion_output(completion, prompt):
             (1, 0),
         )
     )
+
+
+save_chat_text = "Do you want to save this chat?"
+
+
+def save_prompt() -> bool:
+    return confirm(save_chat_text, default=True)
