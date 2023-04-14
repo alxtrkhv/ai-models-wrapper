@@ -8,7 +8,7 @@ from typer import Typer, echo
 from .openai.config import OpenAIConfig
 from .chat.config import ChatConfig
 
-APP_NAME = "com.alxtrkhv.ai-models-wrapper"
+APP_NAME = "aimw"
 FILE_PATH = Path.home() / ".config" / APP_NAME / "config.json"
 
 
