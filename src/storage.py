@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from .config import APP_NAME
 
-STORAGE_PATH = Path.home() / ".local" / APP_NAME
+STORAGE_PATH = Path.home() / ".local" / "share" / APP_NAME
 
 
 def save(obj: BaseModel, name: str) -> bool:
