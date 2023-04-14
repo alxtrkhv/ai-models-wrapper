@@ -19,7 +19,7 @@ def ask(prompt: str):
 
 
 @chat_app.command()
-def start():
+def new():
     chat = Chat()
 
     for completion, prompt in conversation(
