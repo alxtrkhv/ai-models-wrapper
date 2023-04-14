@@ -26,3 +26,9 @@ def ensure_file_exists(file_path: Path) -> None:
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.touch()
         file_path.write_text("{}")
+
+
+def list_files(type: type):
+    path = STORAGE_PATH / type.__name__.lower()
+
+    return path.iterdir()

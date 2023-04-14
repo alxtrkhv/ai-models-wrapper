@@ -7,8 +7,9 @@ from .view import (
     system_message_prompt,
     user_message_prompt,
     save_prompt,
+    file_list
 )
-from ..storage import save
+from ..storage import save, list_files
 
 chat_app = Typer(name="chat")
 
@@ -33,3 +34,8 @@ def new():
 
     if save_prompt():
         save(chat, str(chat.started_at))
+
+@chat_app.command()
+def list():
+    files = list_files(Chat)
+    file_list(files)
