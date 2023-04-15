@@ -1,7 +1,7 @@
 from typer import Typer
 
 from .models import Chat
-from .chat import contextless_completion, conversation, contextful_completion
+from .chat import conversation, Completion, Message
 from .view import (
     completion_output,
     system_message_prompt,
@@ -21,7 +21,9 @@ def ask(prompt: str):
     if api is None:
         return
 
-    completion_output(contextless_completion(prompt, api), prompt)
+    completions = Completion(api)
+
+    completion_output(completions.contextless(prompt), prompt)
 
 
 @chat_app.command()
@@ -31,12 +33,13 @@ def new():
         return
 
     chat = Chat()
+    completions = Completion(api)
 
     for completion, prompt in conversation(
         messages=chat.messages,
         system_message_call=system_message_prompt,
         user_message_call=user_message_prompt,
-        completions_call=lambda messages: contextful_completion(messages, api),
+        completions_call=completions.contextful,
     ):
         completion_output(completion, prompt)
 
