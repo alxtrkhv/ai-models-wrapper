@@ -45,8 +45,8 @@ def new():
 
     chat.finish()
 
-    if save_prompt():
-        save(chat, str(chat.started_at))
+    if len(chat.messages) > 0 and save_prompt():
+        save(chat, str(chat.started_at.replace(microsecond=0)))
 
 
 @chat_app.command()
