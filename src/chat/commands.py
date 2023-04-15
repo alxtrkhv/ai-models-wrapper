@@ -1,7 +1,7 @@
 from typer import Typer
 
 from .models import Chat
-from .chat import conversation, Completion, Message
+from .chat import conversation, Completion
 from .view import (
     completion_output,
     system_message_prompt,
@@ -33,15 +33,15 @@ def new():
         return
 
     chat = Chat()
-    completions = Completion(api)
+    completion = Completion(api)
 
-    for completion, prompt in conversation(
+    for result, prompt in conversation(
         messages=chat.messages,
         system_message_call=system_message_prompt,
         user_message_call=user_message_prompt,
-        completions_call=completions.contextful,
+        completions_call=completion.contextful,
     ):
-        completion_output(completion, prompt)
+        completion_output(result, prompt)
 
     chat.finish()
 
