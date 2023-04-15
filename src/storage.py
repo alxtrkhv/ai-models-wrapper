@@ -29,6 +29,6 @@ def ensure_file_exists(file_path: Path) -> None:
 
 
 def list_files(type: type):
-    path = STORAGE_PATH / type.__name__.lower()
+    path = STORAGE_PATH / type.__name__.lower()  # type: ignore
 
     return path.iterdir()
