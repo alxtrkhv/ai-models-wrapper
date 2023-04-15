@@ -39,7 +39,7 @@ def new():
         messages=chat.messages,
         system_message_call=system_message_prompt,
         user_message_call=user_message_prompt,
-        completions_call=completion.contextful,
+        completion_call=completion.contextful,
     ):
         completion_output(result, prompt)
 

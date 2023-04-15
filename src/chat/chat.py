@@ -28,7 +28,7 @@ def conversation(
     messages: list[Message],
     system_message_call: Callable[..., str],
     user_message_call: Callable[..., str],
-    completions_call: Callable[[list[Message]], Any],
+    completion_call: Callable[[list[Message]], Any],
 ):
     system_message = system_message_call()
     if system_message:
@@ -41,7 +41,7 @@ def conversation(
 
         messages.append(Message(content=user_message, role=MessageRole.USER))
 
-        completion = completions_call(messages)
+        completion = completion_call(messages)
         messages.append(completion.choices[0].message)  # type: ignore
 
         yield (completion, user_message)
