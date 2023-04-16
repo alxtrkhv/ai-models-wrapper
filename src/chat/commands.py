@@ -9,7 +9,7 @@ from .view import (
     save_file_prompt,
     file_list_output,
 )
-from ..storage import save, file_list
+from ..storage.storage import save, file_list
 from ..openai.api import get_api
 
 chat_app = Typer(name="chat")
