@@ -42,6 +42,6 @@ def conversation(
         messages.append(Message(content=user_message, role=MessageRole.USER))
 
         completion = completion_call(messages)
-        messages.append(completion.choices[0].message)  # type: ignore
+        messages.append(Message(**completion.choices[0].message))
 
         yield (completion, user_message)
