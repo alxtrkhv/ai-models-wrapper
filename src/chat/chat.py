@@ -8,10 +8,10 @@ class Completion:
     def __init__(self, api):
         self.api = api
 
-    def contextless(self, input: str):
-        return self.contextful([Message(content=input, role=MessageRole.USER)])
+    def without_context(self, input: str):
+        return self.with_context([Message(content=input, role=MessageRole.USER)])
 
-    def contextful(self, messages: list[Message]):
+    def with_context(self, messages: list[Message]):
         config = read_config().chat
 
         completion = self.api.ChatCompletion.create(
@@ -41,7 +41,7 @@ def conversation(
 
         messages.append(Message(content=user_message, role=MessageRole.USER))
 
-        completion = completion_call(messages)
-        messages.append(Message(**completion.choices[0].message))
+        reply = completion_call(messages)
+        messages.append(Message(**reply.choices[0].message))
 
-        yield completion
+        yield reply

@@ -38,7 +38,7 @@ def user_message_prompt():
     )
 
 
-def completion_output(completion):
+def reply_output(completion):
     usage = completion.usage
     content = completion.choices[0].message.content
 
@@ -56,10 +56,10 @@ def completion_output(completion):
 save_chat_text = f"[{you_color}]Do you want to save this chat?[/{you_color}]"
 
 
-def save_prompt() -> bool:
+def save_file_prompt() -> bool:
     return Confirm.ask(save_chat_text)
 
 
-def file_list(files: Generator[Path, None, None]):
+def file_list_output(files: Generator[Path, None, None]):
     for index, file in enumerate(files):
         echo(f"[{index}] {file.stem}")
