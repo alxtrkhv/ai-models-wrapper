@@ -44,4 +44,4 @@ def conversation(
         completion = completion_call(messages)
         messages.append(Message(**completion.choices[0].message))
 
-        yield (completion, user_message)
+        yield completion

@@ -23,7 +23,7 @@ def ask(prompt: str):
 
     completions = Completion(api)
 
-    completion_output(completions.contextless(prompt), prompt)
+    completion_output(completions.contextless(prompt))
 
 
 @chat_app.command()
@@ -35,13 +35,13 @@ def new():
     chat = Chat()
     completion = Completion(api)
 
-    for result, prompt in conversation(
+    for result in conversation(
         messages=chat.messages,
         system_message_call=system_message_prompt,
         user_message_call=user_message_prompt,
         completion_call=completion.contextful,
     ):
-        completion_output(result, prompt)
+        completion_output(result)
 
     chat.finish()
 

@@ -3,39 +3,44 @@ from typing import Generator
 
 from rich.console import Console
 from rich.padding import Padding
+from rich.prompt import Prompt, Confirm
 
-from typer import prompt, confirm, echo
+from typer import echo
 
-
-system_message_request = "Setup (system message)"
-user_message_request = "Prompt"
-
-
-def system_message_prompt():
-    return prompt(system_message_request, default="")
-
-
-def user_message_prompt():
-    return prompt(user_message_request, default="")
-
-
-console = Console()
 
 you_color = "green"
-you_prompt = f"[{you_color}]Prompt:[/{you_color}]"
+you_prompt = f"[{you_color}]Prompt[/{you_color}]"
+
+setup_prompt = f"[{you_color}]Setup[/{you_color}]"
 
 gpt_color = "cyan"
 gpt_prompt = f"[{gpt_color}]Reply:[/{gpt_color}]"
 
+
 indent = 2
 
+console = Console()
 
-def completion_output(completion, prompt):
+
+def system_message_prompt():
+    return Prompt.ask(
+        setup_prompt,
+        default="",
+        show_default=False,
+    )
+
+
+def user_message_prompt():
+    return Prompt.ask(
+        you_prompt,
+        default="",
+        show_default=False,
+    )
+
+
+def completion_output(completion):
     usage = completion.usage
     content = completion.choices[0].message.content
-
-    console.print(Padding(you_prompt, (1, 0, 0, 0)))
-    console.print(Padding(prompt, (0, 0, 1, indent)))
 
     console.print(gpt_prompt)
     console.print(Padding(content, (0, 0, 1, indent)))
@@ -48,11 +53,11 @@ def completion_output(completion, prompt):
     )
 
 
-save_chat_text = "Do you want to save this chat?"
+save_chat_text = f"[{you_color}]Do you want to save this chat?[/{you_color}]"
 
 
 def save_prompt() -> bool:
-    return confirm(save_chat_text, default=True)
+    return Confirm.ask(save_chat_text)
 
 
 def file_list(files: Generator[Path, None, None]):
