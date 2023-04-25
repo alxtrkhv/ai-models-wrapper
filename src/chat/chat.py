@@ -1,23 +1,22 @@
 from typing import Callable, Any
 
 from .models import Message, MessageRole
-from ..config import read_config
+from ..config import ChatConfig
 
 
 class Completion:
-    def __init__(self, api):
+    def __init__(self, api, config: ChatConfig):
         self.api = api
+        self.config = config
 
     def without_context(self, input: str):
         return self.with_context([Message(content=input, role=MessageRole.USER)])
 
     def with_context(self, messages: list[Message]):
-        config = read_config().chat
-
         completion = self.api.ChatCompletion.create(
-            model=config.model,
-            temperature=config.temperature,
-            top_p=config.top_p,
+            model=self.config.model,
+            temperature=self.config.temperature,
+            top_p=self.config.top_p,
             messages=list(map(lambda x: x.dict(), messages)),
         )
 

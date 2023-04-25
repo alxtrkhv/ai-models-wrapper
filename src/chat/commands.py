@@ -11,6 +11,7 @@ from .view import (
 )
 from ..storage.storage import save, file_list
 from ..openai.api import get_api
+from ..config import read_config
 
 chat_app = Typer(name="chat")
 
@@ -21,7 +22,8 @@ def ask(prompt: str):
     if api is None:
         return
 
-    completion = Completion(api)
+    config = read_config().chat
+    completion = Completion(api, config)
 
     reply_output(completion.without_context(prompt))
 
@@ -33,7 +35,9 @@ def new():
         return
 
     chat = Chat()
-    completion = Completion(api)
+
+    config = read_config().chat
+    completion = Completion(api, config)
 
     for reply in conversation(
         messages=chat.messages,
