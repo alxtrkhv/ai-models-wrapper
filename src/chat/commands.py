@@ -9,7 +9,7 @@ from .view import (
     save_file_prompt,
     file_list_output,
 )
-from ..storage.storage import save, file_list
+from ..storage.storage import save, file_list, remove_by_index
 from ..openai.api import get_api
 from ..config import read_config
 
@@ -56,3 +56,8 @@ def new():
 @chat_app.command()
 def list():
     file_list_output(file_list(Chat))
+
+
+@chat_app.command()
+def rm(index: int):
+    remove_by_index(Chat, index)

@@ -1,3 +1,5 @@
+from typing import Generator
+
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -9,7 +11,7 @@ STORAGE_PATH = Path.home() / ".local" / "share" / APP_NAME
 
 
 def save(obj: BaseModel, name: str) -> bool:
-    path = STORAGE_PATH / type(obj).__name__.lower() / f"{name}.json"
+    path = _path(type(obj)) / f"{name}.json"
 
     ensure_file_exists(path)
     try:
@@ -18,11 +20,19 @@ def save(obj: BaseModel, name: str) -> bool:
 
         return True
     except Exception as e:
-        print(f"Error saving file:{path} | {e}")
+        print(f"Error saving file: {path} | {e}")
         return False
 
 
-def file_list(type: type):
-    path = STORAGE_PATH / type.__name__.lower()  # type: ignore
+def remove_by_index(type: type, index: int):
+    for i, file in enumerate(file_list(type)):
+        if i == index:
+            file.unlink()
 
-    return path.iterdir()
+
+def file_list(type: type):
+    return _path(type).iterdir()
+
+
+def _path(type: type) -> Path:
+    return STORAGE_PATH / type.__name__.lower()  # type: ignore
