@@ -34,10 +34,10 @@ def new():
     if api is None:
         return
 
-    chat = Chat()
-
     config = read_config().chat
     completion = Completion(api, config)
+
+    chat = Chat()
 
     for reply in conversation(
         messages=chat.messages,
