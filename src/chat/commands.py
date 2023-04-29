@@ -50,7 +50,7 @@ def list():
 
 
 @chat_app.command()
-def rm(index: int):
+def remove(index: int):
     storage.remove(Chat, index)
 
 
