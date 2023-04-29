@@ -2,14 +2,7 @@ from typer import Typer
 
 from .models import Chat
 from .chat import conversation, Completion
-from .view import (
-    reply_output,
-    system_message_prompt,
-    user_message_prompt,
-    save_file_prompt,
-    file_list_output,
-    message_output
-)
+from .view import View
 from ..storage.storage import save, file_list, remove, read
 from ..openai.api import get_api
 from ..config import read_config
@@ -23,10 +16,11 @@ def ask(prompt: str):
     if api is None:
         return
 
-    config = read_config().chat
-    completion = Completion(api, config)
+    config = read_config()
+    completion = Completion(api, config.chat)
+    view = View(config.chat.view)
 
-    reply_output(completion.without_context(prompt))
+    view.reply_output(completion.without_context(prompt))
 
 
 @chat_app.command()
@@ -35,28 +29,32 @@ def new():
     if api is None:
         return
 
-    config = read_config().chat
-    completion = Completion(api, config)
+    config = read_config()
+    completion = Completion(api, config.chat)
+    view = View(config.chat.view)
 
     chat = Chat()
 
     for reply in conversation(
         messages=chat.messages,
-        system_message_call=system_message_prompt,
-        user_message_call=user_message_prompt,
+        system_message_call=view.system_message_prompt,
+        user_message_call=view.user_message_prompt,
         completion_call=completion.with_context,
     ):
-        reply_output(reply)
+        view.reply_output(reply)
 
     chat.finish()
 
-    if len(chat.messages) > 0 and save_file_prompt():
+    if len(chat.messages) > 0 and view.save_file_prompt():
         save(chat, str(chat.started_at.replace(microsecond=0)))
 
 
 @chat_app.command()
 def list():
-    file_list_output(file_list(Chat))
+    config = read_config()
+    view = View(config.chat.view)
+
+    view.file_list_output(file_list(Chat))
 
 
 @chat_app.command()
@@ -66,9 +64,12 @@ def rm(index: int):
 
 @chat_app.command()
 def show(index: int):
+    config = read_config()
+    view = View(config.chat.view)
+
     chat = read(Chat, index)
     if not chat:
         return
 
     for message in chat.messages:
-        message_output(message.content, message.role)
+        view.message_output(message.content, message.role.capitalize(), None)

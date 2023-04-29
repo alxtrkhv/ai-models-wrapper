@@ -7,63 +7,75 @@ from rich.prompt import Prompt, Confirm
 
 from typer import echo
 
-
-you_color = "green"
-you_prompt = f"[{you_color}]User[/{you_color}]"
-
-setup_prompt = f"[{you_color}]System[/{you_color}]"
-
-gpt_color = "cyan"
-gpt_prompt = f"[{gpt_color}]Assistant:[/{gpt_color}]"
+from .config import ViewConfig
+from .models import Chat
 
 
-indent = 2
+def _colorized(text: str, color: str | None):
+    if color:
+        result = f"[{color}]{text}:[/{color}]"
+    else:
+        result = f"{text}:"
 
-console = Console()
-
-
-def system_message_prompt():
-    return Prompt.ask(
-        setup_prompt,
-        default="",
-        show_default=False,
-    )
+    return result
 
 
-def user_message_prompt():
-    return Prompt.ask(
-        you_prompt,
-        default="",
-        show_default=False,
-    )
+class View:
+    def __init__(self, config: ViewConfig):
+        self.config = config
+        self.console = Console()
 
+    def system_message_prompt(self):
+        prompt = self.config.system_message_label
+        color = self.config.you_color
 
-def message_output(message, title):
-    console.print(title)
-    console.print(Padding(message, (0, 0, 1, indent)))
-
-
-def reply_output(completion):
-    usage = completion.usage
-    content = completion.choices[0].message.content
-
-    message_output(content, gpt_prompt)
-
-    console.print(
-        Padding(
-            f"{usage.prompt_tokens}/{usage.completion_tokens}/{usage.total_tokens}",
-            (1, 0),
+        return Prompt.ask(
+            _colorized(prompt, color),
+            default="",
+            show_default=False,
         )
-    )
 
+    def user_message_prompt(self):
+        prompt = self.config.user_message_label
+        color = self.config.you_color
 
-save_chat_text = f"[{you_color}]Do you want to save this chat?[/{you_color}]"
+        return Prompt.ask(
+            _colorized(prompt, color),
+            default="",
+            show_default=False,
+        )
 
+    def reply_output(self, completion):
+        usage = completion.usage
+        content = completion.choices[0].message.content
 
-def save_file_prompt() -> bool:
-    return Confirm.ask(save_chat_text)
+        self.message_output(
+            content,
+            self.config.assistant_message_lable,
+            self.config.assistant_color,
+        )
 
+        self.console.print(
+            Padding(
+                f"{usage.prompt_tokens}/{usage.completion_tokens}/{usage.total_tokens}",
+                (1, 0),
+            )
+        )
 
-def file_list_output(files: Generator[Path, None, None]):
-    for index, file in enumerate(files):
-        echo(f"[{index}] {file.stem}")
+    def save_file_prompt(
+        self,
+    ) -> bool:
+        text = self.config.save_chat_text
+        color = self.config.you_color
+
+        return Confirm.ask(_colorized(text, color))
+
+    def file_list_output(self, files: Generator[Path, None, None]):
+        for index, file in enumerate(files):
+            echo(f"[{index}] {file.stem}")
+
+    def message_output(self, content: str, title: str, color: str | None):
+        indent = self.config.indent
+
+        self.console.print(_colorized(title, color))
+        self.console.print(Padding(content, (0, 0, 1, indent)))
