@@ -1,7 +1,6 @@
-from json import load
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, parse_file_as
 from pydantic.utils import deep_update
 from typer import Typer, echo
 
@@ -20,26 +19,22 @@ class Config(BaseModel):
 
 def read_config() -> Config:
     try:
-        with open(FILE_PATH, "r") as file:
-            data = load(file)
+        return parse_file_as(Config, FILE_PATH)
     except FileNotFoundError:
-        return Config()  # type: ignore
+        return Config()
     except Exception as e:
         print(f"Error reading config file '{FILE_PATH}': {e}")
-        return Config()  # type: ignore
-
-    config = Config(**data)
-    return config
+        return Config()
 
 
-def update_config(updated_data: dict | Config) -> bool:
+def update_config(new_config: Config) -> bool:
     ensure_file_exists(FILE_PATH)
 
-    if isinstance(updated_data, Config):
-        updated_data = updated_data.dict()
-
     updated_config = Config(
-        **deep_update(read_config().dict(exclude_unset=True), updated_data)
+        **deep_update(
+            read_config().dict(exclude_unset=True),
+            new_config.dict(exclude_unset=True),
+        )
     )
 
     try:
