@@ -9,6 +9,11 @@ from ..config import read_config
 
 chat_app = Typer(name="chat")
 
+api = get_api()
+config = read_config()
+completion = Completion(api, config.chat)
+view = View(config.chat.view)
+
 
 @chat_app.command()
 def ask(prompt: str):
@@ -16,22 +21,13 @@ def ask(prompt: str):
     if api is None:
         return
 
-    config = read_config()
-    completion = Completion(api, config.chat)
-    view = View(config.chat.view)
-
     view.reply_output(completion.without_context(prompt))
 
 
 @chat_app.command()
 def new():
-    api = get_api()
     if api is None:
         return
-
-    config = read_config()
-    completion = Completion(api, config.chat)
-    view = View(config.chat.view)
 
     chat = Chat()
 
@@ -50,9 +46,6 @@ def new():
 
 @chat_app.command()
 def list():
-    config = read_config()
-    view = View(config.chat.view)
-
     view.file_list_output(file_list(Chat))
 
 
@@ -63,9 +56,6 @@ def rm(index: int):
 
 @chat_app.command()
 def show(index: int):
-    config = read_config()
-    view = View(config.chat.view)
-
     chat = read(Chat, index)
     if not chat:
         return
@@ -76,13 +66,8 @@ def show(index: int):
 
 @chat_app.command(name="continue")
 def continue_(index: int):
-    api = get_api()
     if api is None:
         return
-
-    config = read_config()
-    completion = Completion(api, config.chat)
-    view = View(config.chat.view)
 
     chat = read(Chat, index)
     if not chat:
