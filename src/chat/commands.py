@@ -40,6 +40,7 @@ def new():
         system_message_call=view.system_message_prompt,
         user_message_call=view.user_message_prompt,
         completion_call=completion.with_context,
+        spinner_call=view.toggle_spinner,
     ):
         view.reply_output(reply)
 

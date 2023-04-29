@@ -9,6 +9,7 @@ class ViewConfig(BaseModel):
     assistant_message_lable: str = "Assistant"
     indent: int = 2
     save_chat_text: str = "Do you want to save this chat?"
+    completion_spinner_text = "Waiting for response"
 
 
 class ChatConfig(BaseModel):

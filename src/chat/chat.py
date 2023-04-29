@@ -28,6 +28,7 @@ def conversation(
     system_message_call: Callable[..., str],
     user_message_call: Callable[..., str],
     completion_call: Callable[[list[Message]], Any],
+    spinner_call: Callable[..., None],
 ):
     system_message = system_message_call()
     if system_message:
@@ -40,7 +41,13 @@ def conversation(
 
         messages.append(Message(content=user_message, role=MessageRole.USER))
 
+        if spinner_call:
+            spinner_call()
+
         reply = completion_call(messages)
         messages.append(Message(**reply.choices[0].message))
+
+        if spinner_call:
+            spinner_call()
 
         yield reply

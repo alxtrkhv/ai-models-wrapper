@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Generator
 
+from rich.status import Status
 from rich.console import Console
 from rich.padding import Padding
 from rich.prompt import Prompt, Confirm
@@ -24,6 +25,7 @@ class View:
     def __init__(self, config: ViewConfig):
         self.config = config
         self.console = Console()
+        self._spinner = self._spinner_generator()
 
     def system_message_prompt(self):
         prompt = self.config.system_message_label
@@ -79,3 +81,19 @@ class View:
 
         self.console.print(_colorized(f"{title}:", color))
         self.console.print(Padding(content, (0, 0, 1, indent)))
+
+    def toggle_spinner(self):
+        next(self._spinner)
+
+    def _spinner_generator(self):
+        status = Status(
+            spinner="simpleDots",
+            status=self.config.completion_spinner_text,
+            console=self.console,
+        )
+
+        while True:
+            status.start()
+            yield
+            status.stop()
+            yield
