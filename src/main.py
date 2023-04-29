@@ -8,9 +8,5 @@ for sub_app in sub_apps:
     app.add_typer(sub_app)
 
 
-def run():
+def run_cli():
     app()
-
-
-if __name__ == "__main__":
-    run()
