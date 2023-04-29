@@ -8,8 +8,9 @@ from .view import (
     user_message_prompt,
     save_file_prompt,
     file_list_output,
+    message_output
 )
-from ..storage.storage import save, file_list, remove_by_index
+from ..storage.storage import save, file_list, remove, read
 from ..openai.api import get_api
 from ..config import read_config
 
@@ -60,4 +61,14 @@ def list():
 
 @chat_app.command()
 def rm(index: int):
-    remove_by_index(Chat, index)
+    remove(Chat, index)
+
+
+@chat_app.command()
+def show(index: int):
+    chat = read(Chat, index)
+    if not chat:
+        return
+
+    for message in chat.messages:
+        message_output(message.content, message.role)

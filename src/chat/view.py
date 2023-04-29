@@ -9,12 +9,12 @@ from typer import echo
 
 
 you_color = "green"
-you_prompt = f"[{you_color}]Prompt[/{you_color}]"
+you_prompt = f"[{you_color}]User[/{you_color}]"
 
-setup_prompt = f"[{you_color}]Setup[/{you_color}]"
+setup_prompt = f"[{you_color}]System[/{you_color}]"
 
 gpt_color = "cyan"
-gpt_prompt = f"[{gpt_color}]Reply:[/{gpt_color}]"
+gpt_prompt = f"[{gpt_color}]Assistant:[/{gpt_color}]"
 
 
 indent = 2
@@ -38,12 +38,16 @@ def user_message_prompt():
     )
 
 
+def message_output(message, title):
+    console.print(title)
+    console.print(Padding(message, (0, 0, 1, indent)))
+
+
 def reply_output(completion):
     usage = completion.usage
     content = completion.choices[0].message.content
 
-    console.print(gpt_prompt)
-    console.print(Padding(content, (0, 0, 1, indent)))
+    message_output(content, gpt_prompt)
 
     console.print(
         Padding(

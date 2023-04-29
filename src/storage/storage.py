@@ -2,7 +2,7 @@ from typing import Generator
 
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, parse_file_as
 
 from .utils import ensure_file_exists
 from ..config import APP_NAME
@@ -24,10 +24,16 @@ def save(obj: BaseModel, name: str) -> bool:
         return False
 
 
-def remove_by_index(type: type, index: int):
+def remove(type: type, index: int):
     for i, file in enumerate(file_list(type)):
         if i == index:
             file.unlink()
+
+
+def read(type: type, index: int):
+    for i, path in enumerate(file_list(type)):
+        if i == index:
+            return parse_file_as(type, path)
 
 
 def file_list(type: type):
