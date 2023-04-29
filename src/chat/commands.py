@@ -17,7 +17,6 @@ view = View(config.chat.view)
 
 @chat_app.command()
 def ask(prompt: str):
-    api = get_api()
     if api is None:
         return
 
