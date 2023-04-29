@@ -28,7 +28,7 @@ def conversation(
     system_message_call: Callable[..., str],
     user_message_call: Callable[..., str],
     completion_call: Callable[[list[Message]], Any],
-    spinner_call: Callable[..., None],
+    spinner_call: Callable[..., None] | None,
 ):
     system_message = system_message_call()
     if system_message:
