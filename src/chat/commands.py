@@ -74,7 +74,7 @@ def show(index: int):
         view.message_output(message.content, message.role.capitalize(), None)
 
 
-@chat_app.command()
+@chat_app.command(name="continue")
 def continue_(index: int):
     api = get_api()
     if api is None:
