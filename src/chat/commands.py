@@ -3,7 +3,7 @@ from typer import Typer
 from .models import Chat
 from .chat import conversation, Completion
 from .view import View
-from ..storage.storage import save, file_list, remove, read
+from ..storage import storage
 from ..openai.api import get_api
 from ..config import read_config
 
@@ -41,22 +41,22 @@ def new():
         view.reply_output(reply)
 
     if len(chat.messages) > 0 and view.save_file_prompt():
-        save(chat, str(chat.started_at.replace(microsecond=0)))
+        storage.save(chat, str(chat.started_at.replace(microsecond=0)))
 
 
 @chat_app.command()
 def list():
-    view.file_list_output(file_list(Chat))
+    view.file_list_output(storage.file_list(Chat))
 
 
 @chat_app.command()
 def rm(index: int):
-    remove(Chat, index)
+    storage.remove(Chat, index)
 
 
 @chat_app.command()
 def show(index: int):
-    chat = read(Chat, index)
+    chat = storage.read(Chat, index)
     if not chat:
         return
 
@@ -69,7 +69,7 @@ def continue_(index: int):
     if api is None:
         return
 
-    chat = read(Chat, index)
+    chat = storage.read(Chat, index)
     if not chat:
         return
 
@@ -83,5 +83,5 @@ def continue_(index: int):
         view.reply_output(reply)
 
     if view.save_file_prompt():
-        save(chat, str(chat.started_at.replace(microsecond=0)))
-        remove(Chat, index)
+        storage.save(chat, str(chat.started_at.replace(microsecond=0)))
+        storage.remove(Chat, index)
