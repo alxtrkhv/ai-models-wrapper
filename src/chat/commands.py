@@ -36,15 +36,13 @@ def new():
     chat = Chat()
 
     for reply in conversation(
-        messages=chat.messages,
+        chat=chat,
         system_message_call=view.system_message_prompt,
         user_message_call=view.user_message_prompt,
         completion_call=completion.with_context,
         spinner_call=view.toggle_spinner,
     ):
         view.reply_output(reply)
-
-    chat.finish()
 
     if len(chat.messages) > 0 and view.save_file_prompt():
         save(chat, str(chat.started_at.replace(microsecond=0)))
@@ -74,3 +72,31 @@ def show(index: int):
 
     for message in chat.messages:
         view.message_output(message.content, message.role.capitalize(), None)
+
+
+@chat_app.command()
+def continue_(index: int):
+    api = get_api()
+    if api is None:
+        return
+
+    config = read_config()
+    completion = Completion(api, config.chat)
+    view = View(config.chat.view)
+
+    chat = read(Chat, index)
+    if not chat:
+        return
+
+    for reply in conversation(
+        chat=chat,
+        system_message_call=None,
+        user_message_call=view.user_message_prompt,
+        completion_call=completion.with_context,
+        spinner_call=view.toggle_spinner,
+    ):
+        view.reply_output(reply)
+
+    if view.save_file_prompt():
+        save(chat, str(chat.started_at.replace(microsecond=0)))
+        remove(Chat, index)

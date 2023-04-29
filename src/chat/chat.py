@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from .models import Message, MessageRole
+from .models import Message, MessageRole, Chat
 from ..config import ChatConfig
 
 
@@ -24,30 +24,35 @@ class Completion:
 
 
 def conversation(
-    messages: list[Message],
-    system_message_call: Callable[..., str],
+    chat: Chat,
+    system_message_call: Callable[..., str] | None,
     user_message_call: Callable[..., str],
     completion_call: Callable[[list[Message]], Any],
     spinner_call: Callable[..., None] | None,
 ):
-    system_message = system_message_call()
-    if system_message:
-        messages.append(Message(content=system_message, role=MessageRole.SYSTEM))
+    if system_message_call:
+        system_message = system_message_call()
+        if system_message:
+            chat.messages.append(
+                Message(content=system_message, role=MessageRole.SYSTEM)
+            )
 
     while True:
         user_message = user_message_call()
         if not user_message:
             break
 
-        messages.append(Message(content=user_message, role=MessageRole.USER))
+        chat.messages.append(Message(content=user_message, role=MessageRole.USER))
 
         if spinner_call:
             spinner_call()
 
-        reply = completion_call(messages)
-        messages.append(Message(**reply.choices[0].message))
+        reply = completion_call(chat.messages)
+        chat.messages.append(Message(**reply.choices[0].message))
 
         if spinner_call:
             spinner_call()
 
         yield reply
+
+    chat.finish()
