@@ -5,7 +5,10 @@ from .config import OPEN_AI_KEYRING, OpenAIConfig
 from ..config import read_config, update_config, Config
 
 
-open_ai_app = Typer(name="openai")
+open_ai_app = Typer(
+    name="openai",
+    no_args_is_help=True,
+)
 
 
 @open_ai_app.command()

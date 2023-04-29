@@ -7,7 +7,10 @@ from ..storage import storage
 from ..openai.api import get_api
 from ..config import read_config
 
-chat_app = Typer(name="chat")
+chat_app = Typer(
+    name="chat",
+    no_args_is_help=True,
+)
 
 api = get_api()
 config = read_config()

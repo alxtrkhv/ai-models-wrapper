@@ -47,7 +47,10 @@ def update_config(new_config: Config) -> bool:
     return True
 
 
-config_app = Typer(name="config")
+config_app = Typer(
+    name="config",
+    no_args_is_help=True,
+)
 
 
 @config_app.command()
