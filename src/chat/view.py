@@ -13,9 +13,9 @@ from .models import Chat
 
 def _colorized(text: str, color: str | None):
     if color:
-        result = f"[{color}]{text}:[/{color}]"
+        result = f"[{color}]{text}[/{color}]"
     else:
-        result = f"{text}:"
+        result = f"{text}"
 
     return result
 
@@ -77,5 +77,5 @@ class View:
     def message_output(self, content: str, title: str, color: str | None):
         indent = self.config.indent
 
-        self.console.print(_colorized(title, color))
+        self.console.print(_colorized(f"{title}:", color))
         self.console.print(Padding(content, (0, 0, 1, indent)))
