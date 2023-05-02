@@ -47,11 +47,18 @@ def conversation(
         if spinner_call:
             spinner_call()
 
-        reply = completion_call(chat.messages)
-        chat.messages.append(Message(**reply.choices[0].message))
+        try:
+            reply = completion_call(chat.messages)
 
-        if spinner_call:
-            spinner_call()
+        except Exception as e:
+            chat.log_exception(e)
+            break
+
+        finally:
+            if spinner_call:
+                spinner_call()
+
+        chat.messages.append(Message(**reply.choices[0].message))
 
         yield reply
 
