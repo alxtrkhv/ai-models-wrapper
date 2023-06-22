@@ -13,7 +13,5 @@ class ViewConfig(BaseModel):
 
 
 class ChatConfig(BaseModel):
-    model: str = "gpt-3.5-turbo"
-    temperature: float = 1
-    top_p: float = 1
+    model: str = "gpt-3.5-turbo-16k-0613"
     view: ViewConfig = ViewConfig()

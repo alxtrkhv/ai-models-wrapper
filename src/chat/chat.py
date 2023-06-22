@@ -15,8 +15,6 @@ class Completion:
     def with_context(self, messages: list[Message]):
         completion = self.api.ChatCompletion.create(
             model=self.config.model,
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
             messages=list(map(lambda x: x.dict(), messages)),
         )
 
