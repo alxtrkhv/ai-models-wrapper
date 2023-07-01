@@ -16,7 +16,7 @@ def save(obj: BaseModel, name: str) -> bool:
     ensure_file_exists(path)
     try:
         with open(path, "w") as file:
-            file.write(obj.json(indent=2))
+            file.write(obj.json(indent=2, exclude_none=True))
 
         return True
     except Exception as e:

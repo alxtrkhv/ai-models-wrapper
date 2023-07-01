@@ -20,7 +20,7 @@ class Completion:
     def with_context(self, messages: list[Message]):
         completion = self.api.ChatCompletion.create(
             model=self.config.model,
-            messages=list(map(lambda x: x.dict(), messages)),
+            messages=list(map(lambda x: x.dict(exclude_none=True), messages)),
         )
         usage = completion.usage
 

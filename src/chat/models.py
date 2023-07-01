@@ -13,11 +13,14 @@ class MessageRole(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
     SYSTEM = "system"
+    FUNCTION = "function"
 
 
 class Message(BaseModel):
     content: str
     role: MessageRole
+    name: str | None = None
+    function_call: dict | None = None
 
 
 class CompletionUsage(BaseModel):
