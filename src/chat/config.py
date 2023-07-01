@@ -13,5 +13,5 @@ class ViewConfig(BaseModel):
 
 
 class ChatConfig(BaseModel):
-    model: str = "gpt-3.5-turbo-16k-0613"
+    model: str = "gpt-3.5-turbo-16k"
     view: ViewConfig = ViewConfig()
