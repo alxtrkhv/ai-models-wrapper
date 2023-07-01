@@ -9,7 +9,7 @@ from rich.prompt import Prompt, Confirm
 from typer import echo
 
 from .config import ViewConfig
-from .models import Chat
+from .models import Chat, CompletionResult
 
 
 def _colorized(text: str, color: str | None):
@@ -47,9 +47,9 @@ class View:
             show_default=False,
         )
 
-    def reply_output(self, completion):
+    def reply_output(self, completion: CompletionResult):
         usage = completion.usage
-        content = completion.choices[0].message.content
+        content = completion.message.content
 
         self.message_output(
             content,
@@ -57,9 +57,12 @@ class View:
             self.config.assistant_color,
         )
 
+        if not usage:
+            return
+
         self.console.print(
             Padding(
-                f"{usage.prompt_tokens}/{usage.completion_tokens}/{usage.total_tokens}",
+                f"{usage.prompt}/{usage.completion}/{usage.total}",
                 (1, 0),
             )
         )

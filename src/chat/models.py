@@ -20,6 +20,17 @@ class Message(BaseModel):
     role: MessageRole
 
 
+class CompletionUsage(BaseModel):
+    prompt: int
+    completion: int
+    total: int
+
+
+class CompletionResult(BaseModel):
+    message: Message
+    usage: CompletionUsage | None = None
+
+
 class Chat(BaseModel):
     messages: list[Message] = []
     started_at: datetime = datetime.utcnow()

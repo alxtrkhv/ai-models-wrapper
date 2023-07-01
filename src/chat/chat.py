@@ -1,7 +1,12 @@
-from typing import Callable, Any
+from typing import Callable, Any, TypeAlias
 
-from .models import Message, MessageRole, Chat
+from .models import Message, MessageRole, Chat, CompletionResult, CompletionUsage
 from ..config import ChatConfig
+
+
+ReturnCompletion: TypeAlias = Callable[[list[Message]], CompletionResult]
+ReturnString: TypeAlias = Callable[..., str]
+ReturnVoid: TypeAlias = Callable[..., None]
 
 
 class Completion:
@@ -17,16 +22,24 @@ class Completion:
             model=self.config.model,
             messages=list(map(lambda x: x.dict(), messages)),
         )
+        usage = completion.usage
 
-        return completion
+        return CompletionResult(
+            message=Message(**completion.choices[0].message),
+            usage=CompletionUsage(
+                prompt=usage.prompt_tokens,
+                completion=usage.completion_tokens,
+                total=usage.total_tokens,
+            ),
+        )
 
 
 def conversation(
     chat: Chat,
-    system_message_call: Callable[..., str] | None,
-    user_message_call: Callable[..., str],
-    completion_call: Callable[[list[Message]], Any],
-    spinner_call: Callable[..., None] | None,
+    system_message_call: ReturnString | None,
+    user_message_call: ReturnString,
+    completion_call: ReturnCompletion,
+    spinner_call: ReturnVoid | None,
 ):
     if system_message_call:
         system_message = system_message_call()
@@ -56,7 +69,7 @@ def conversation(
             if spinner_call:
                 spinner_call()
 
-        chat.messages.append(Message(**reply.choices[0].message))
+        chat.messages.append(reply.message)
 
         yield reply
 
