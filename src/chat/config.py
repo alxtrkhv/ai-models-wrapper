@@ -1,4 +1,12 @@
+from enum import Enum
+
 from pydantic import BaseModel
+
+
+class ChatModels(str, Enum):
+    GPT3 = "gpt-3.5-turbo"
+    GPT3_LARGE = "gpt-3.5-turbo-16k"
+    GPT4 = "gpt-4"
 
 
 class ViewConfig(BaseModel):
@@ -13,5 +21,5 @@ class ViewConfig(BaseModel):
 
 
 class ChatConfig(BaseModel):
-    model: str = "gpt-3.5-turbo-16k"
+    model: ChatModels = ChatModels.GPT3_LARGE
     view: ViewConfig = ViewConfig()

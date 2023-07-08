@@ -1,8 +1,9 @@
-from typer import Typer
+from typer import Typer, Option
 
 from .models import Chat
 from .chat import conversation, Completion
 from .view import View
+from .config import ChatModels
 from ..storage import storage
 from ..openai.api import get_api
 from ..config import read_config
@@ -16,6 +17,12 @@ api = get_api()
 config = read_config()
 completion = Completion(api, config.chat)
 view = View(config.chat.view)
+
+
+@chat_app.callback()
+def callback(model: ChatModels = Option(None)):
+    if model:
+        config.chat.model = model
 
 
 @chat_app.command()
