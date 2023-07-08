@@ -64,10 +64,10 @@ class View:
         )
 
     def print_reply(self, reply: Error | CompletionResult):
-        if type(reply) is Error:
+        if isinstance(reply, Error):
             self._error_output(reply)
 
-        if type(reply) is CompletionResult:
+        if isinstance(reply, CompletionResult):
             self._completion_output(reply)
 
     def _completion_output(self, completion: CompletionResult):
