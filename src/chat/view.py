@@ -7,9 +7,20 @@ from rich.padding import Padding
 from rich.prompt import Prompt, Confirm
 
 from typer import echo
+from pydantic import BaseModel
 
-from .config import ViewConfig
-from .models import Chat, CompletionResult
+from .models import CompletionResult
+
+
+class ViewConfig(BaseModel):
+    you_color: str = "green"
+    assistant_color: str = "cyan"
+    system_message_label: str = "System"
+    user_message_label: str = "User"
+    assistant_message_lable: str = "Assistant"
+    indent: int = 2
+    save_chat_text: str = "Do you want to save this chat?"
+    completion_spinner_text = "Waiting for response"
 
 
 def _colorized(text: str, color: str | None):

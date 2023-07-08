@@ -2,8 +2,8 @@ from typer import Typer, Option
 
 from .models import Chat
 from .chat import conversation, Completion
-from .view import View
-from .config import ChatModels, ViewConfig
+from .view import View, ViewConfig
+from .config import ChatModels
 from ..storage import storage
 from ..openai.api import get_api
 from ..config import read_config
