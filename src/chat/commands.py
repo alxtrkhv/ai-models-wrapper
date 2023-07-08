@@ -3,7 +3,7 @@ from typer import Typer, Option
 from .models import Chat
 from .chat import conversation, Completion
 from .view import View
-from .config import ChatModels
+from .config import ChatModels, ViewConfig
 from ..storage import storage
 from ..openai.api import get_api
 from ..config import read_config
@@ -16,7 +16,7 @@ chat_app = Typer(
 api = get_api()
 config = read_config()
 completion = Completion(api, config.chat)
-view = View(config.chat.view)
+view = View(ViewConfig())
 
 
 @chat_app.callback()

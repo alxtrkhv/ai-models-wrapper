@@ -22,4 +22,3 @@ class ViewConfig(BaseModel):
 
 class ChatConfig(BaseModel):
     model: ChatModels = ChatModels.GPT3_LARGE
-    view: ViewConfig = ViewConfig()
