@@ -1,6 +1,6 @@
 from typer import Typer, Option
 
-from .models import Chat
+from .models import Chat, Error, CompletionResult
 from .chat import conversation, Completion
 from .view import View, ViewConfig
 from .config import ChatModels
@@ -30,7 +30,7 @@ def ask(prompt: str):
     if api is None:
         return
 
-    view.reply_output(completion.without_context(prompt))
+    view._completion_output(completion.without_context(prompt))
 
 
 @chat_app.command()
@@ -47,7 +47,7 @@ def new():
         completion_call=completion.with_context,
         spinner_call=view.toggle_spinner,
     ):
-        view.reply_output(reply)
+        view.print_reply(reply)
 
     if len(chat.messages) > 0 and view.save_file_prompt():
         storage.save(chat, str(chat.started_at.replace(microsecond=0)))
@@ -89,7 +89,7 @@ def continue_(index: int):
         completion_call=completion.with_context,
         spinner_call=view.toggle_spinner,
     ):
-        view.reply_output(reply)
+        view.print_reply(reply)
 
     if view.save_file_prompt():
         storage.save(chat, str(chat.started_at.replace(microsecond=0)))

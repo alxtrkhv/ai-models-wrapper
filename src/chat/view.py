@@ -9,18 +9,23 @@ from rich.prompt import Prompt, Confirm
 from typer import echo
 from pydantic import BaseModel
 
-from .models import CompletionResult
+from .models import CompletionResult, Error
 
 
 class ViewConfig(BaseModel):
     you_color: str = "green"
     assistant_color: str = "cyan"
+    error_color: str = "red"
+
     system_message_label: str = "System"
     user_message_label: str = "User"
-    assistant_message_lable: str = "Assistant"
-    indent: int = 2
+    assistant_message_label: str = "Assistant"
+    error_message_label: str = "Error"
+
     save_chat_text: str = "Do you want to save this chat?"
     completion_spinner_text = "Waiting for response"
+
+    indent: int = 2
 
 
 def _colorized(text: str, color: str | None):
@@ -58,13 +63,20 @@ class View:
             show_default=False,
         )
 
-    def reply_output(self, completion: CompletionResult):
+    def print_reply(self, reply: Error | CompletionResult):
+        if type(reply) is Error:
+            self._error_output(reply)
+
+        if type(reply) is CompletionResult:
+            self._completion_output(reply)
+
+    def _completion_output(self, completion: CompletionResult):
         usage = completion.usage
         content = completion.message.content
 
         self.message_output(
             content,
-            self.config.assistant_message_lable,
+            self.config.assistant_message_label,
             self.config.assistant_color,
         )
 
@@ -76,6 +88,13 @@ class View:
                 f"{usage.prompt}/{usage.completion}/{usage.total}",
                 (1, 0),
             )
+        )
+
+    def _error_output(self, error: Error):
+        self.message_output(
+            error.message,
+            self.config.error_message_label,
+            self.config.error_color,
         )
 
     def save_file_prompt(

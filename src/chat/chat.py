@@ -1,6 +1,6 @@
-from typing import Callable, Any, TypeAlias
+from typing import Callable, TypeAlias
 
-from .models import Message, MessageRole, Chat, CompletionResult, CompletionUsage
+from .models import Message, MessageRole, Chat, CompletionResult, CompletionUsage, Error
 from ..config import ChatConfig
 
 
@@ -63,6 +63,7 @@ def conversation(
 
         except Exception as e:
             chat.log_exception(e)
+            yield Error(message=str(e))
             break
 
         finally:
