@@ -39,7 +39,7 @@ def read(type: Type[T], index: int) -> T | None:
 
 
 def file_list(type: type):
-    return _path(type).iterdir()
+    return sorted(_path(type).iterdir())
 
 
 def _path(type: type) -> Path:

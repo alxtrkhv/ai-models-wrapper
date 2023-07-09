@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Generator, TypeAlias
+from typing import Sequence
 from abc import ABC, abstractmethod
 
 from rich.status import Status
@@ -11,8 +11,6 @@ from typer import echo
 from pydantic import BaseModel
 
 from .models import CompletionResult, Error
-
-PathGenerator: TypeAlias = Generator[Path, None, None]
 
 
 class CLIConfig(BaseModel):
@@ -54,7 +52,7 @@ class IView(ABC):
         pass
 
     @abstractmethod
-    def file_list_output(self, files: PathGenerator):
+    def file_list_output(self, files: Sequence[Path]):
         pass
 
     @abstractmethod
@@ -108,7 +106,7 @@ class CLIView(IView):
 
         return Confirm.ask(_colorized(text, color))
 
-    def file_list_output(self, files: PathGenerator):
+    def file_list_output(self, files: Sequence[Path]):
         for index, file in enumerate(files):
             echo(f"[{index}] {file.stem}")
 
