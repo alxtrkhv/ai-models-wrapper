@@ -1,12 +1,6 @@
-from typing import Callable, TypeAlias
-
+from .view import IView
 from .models import Message, MessageRole, Chat, CompletionResult, CompletionUsage, Error
 from ..config import ChatConfig
-
-
-ReturnCompletion: TypeAlias = Callable[[list[Message]], CompletionResult]
-ReturnString: TypeAlias = Callable[..., str]
-ReturnVoid: TypeAlias = Callable[..., None]
 
 
 class Completion:
@@ -34,32 +28,24 @@ class Completion:
         )
 
 
-def conversation(
-    chat: Chat,
-    system_message_call: ReturnString | None,
-    user_message_call: ReturnString,
-    completion_call: ReturnCompletion,
-    spinner_call: ReturnVoid | None,
-):
-    if system_message_call:
-        system_message = system_message_call()
-        if system_message:
-            chat.messages.append(
-                Message(content=system_message, role=MessageRole.SYSTEM)
-            )
+def conversation(chat: Chat, completion: Completion, view: IView):
+    system_message = view.get_system_message()
+    if system_message:
+        chat.messages.append(
+            Message(content=system_message, role=MessageRole.SYSTEM)
+        )
 
     while True:
-        user_message = user_message_call()
+        user_message = view.get_user_message()
         if not user_message:
             break
 
         chat.messages.append(Message(content=user_message, role=MessageRole.USER))
 
-        if spinner_call:
-            spinner_call()
+        view.toggle_spinner()
 
         try:
-            reply = completion_call(chat.messages)
+            reply = completion.with_context(chat.messages)
 
         except Exception as e:
             chat.log_exception(e)
@@ -67,8 +53,7 @@ def conversation(
             break
 
         finally:
-            if spinner_call:
-                spinner_call()
+            view.toggle_spinner()
 
         chat.messages.append(reply.message)
 

@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Type, TypeVar
 
 from pathlib import Path
 
@@ -6,6 +6,8 @@ from pydantic import BaseModel, parse_file_as
 
 from .utils import ensure_file_exists
 from ..config import APP_NAME
+
+T = TypeVar('T')
 
 STORAGE_PATH = Path.home() / ".local" / "share" / APP_NAME
 
@@ -30,7 +32,7 @@ def remove(type: type, index: int):
             file.unlink()
 
 
-def read(type: type, index: int):
+def read(type: Type[T], index: int) -> T | None:
     for i, path in enumerate(file_list(type)):
         if i == index:
             return parse_file_as(type, path)

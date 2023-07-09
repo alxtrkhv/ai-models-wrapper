@@ -1,8 +1,8 @@
 from typer import Typer, Option
 
-from .models import Chat, Error, CompletionResult
+from .models import Chat
 from .chat import conversation, Completion
-from .view import View, ViewConfig
+from .view import CLIView, CLIConfig
 from .config import ChatModels
 from ..storage import storage
 from ..openai.api import get_api
@@ -16,7 +16,7 @@ chat_app = Typer(
 api = get_api()
 config = read_config()
 completion = Completion(api, config.chat)
-view = View(ViewConfig())
+view = CLIView(CLIConfig())
 
 
 @chat_app.callback()
@@ -40,14 +40,8 @@ def new():
 
     chat = Chat()
 
-    for reply in conversation(
-        chat=chat,
-        system_message_call=view.system_message_prompt,
-        user_message_call=view.user_message_prompt,
-        completion_call=completion.with_context,
-        spinner_call=view.toggle_spinner,
-    ):
-        view.print_reply(reply)
+    for reply in conversation(chat, completion, view):
+        view.reply_output(reply)
 
     if len(chat.messages) > 0 and view.save_file_prompt():
         storage.save(chat, str(chat.started_at.replace(microsecond=0)))
@@ -82,14 +76,8 @@ def continue_(index: int):
     if not chat:
         return
 
-    for reply in conversation(
-        chat=chat,
-        system_message_call=None,
-        user_message_call=view.user_message_prompt,
-        completion_call=completion.with_context,
-        spinner_call=view.toggle_spinner,
-    ):
-        view.print_reply(reply)
+    for reply in conversation(chat, completion, view):
+        view.reply_output(reply)
 
     if view.save_file_prompt():
         storage.save(chat, str(chat.started_at.replace(microsecond=0)))

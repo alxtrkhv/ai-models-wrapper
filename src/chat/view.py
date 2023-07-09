@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Generator
+from typing import Generator, TypeAlias
+from abc import ABC, abstractmethod
 
 from rich.status import Status
 from rich.console import Console
@@ -11,8 +12,10 @@ from pydantic import BaseModel
 
 from .models import CompletionResult, Error
 
+PathGenerator: TypeAlias = Generator[Path, None, None]
 
-class ViewConfig(BaseModel):
+
+class CLIConfig(BaseModel):
     you_color: str = "green"
     assistant_color: str = "cyan"
     error_color: str = "red"
@@ -37,13 +40,43 @@ def _colorized(text: str, color: str | None):
     return result
 
 
-class View:
-    def __init__(self, config: ViewConfig):
+class IView(ABC):
+    @abstractmethod
+    def get_system_message(self):
+        return ""
+
+    @abstractmethod
+    def get_user_message(self):
+        return ""
+
+    @abstractmethod
+    def message_output(self, content: str, title: str, color: str | None):
+        pass
+
+    @abstractmethod
+    def file_list_output(self, files: PathGenerator):
+        pass
+
+    @abstractmethod
+    def save_file_prompt(self) -> bool:
+        return False
+
+    @abstractmethod
+    def toggle_spinner(self):
+        pass
+
+    @abstractmethod
+    def reply_output(self, reply: Error | CompletionResult):
+        pass
+
+
+class CLIView(IView):
+    def __init__(self, config: CLIConfig):
         self.config = config
         self.console = Console()
         self._spinner = self._spinner_generator()
 
-    def system_message_prompt(self):
+    def get_system_message(self):
         prompt = self.config.system_message_label
         color = self.config.you_color
 
@@ -53,7 +86,7 @@ class View:
             show_default=False,
         )
 
-    def user_message_prompt(self):
+    def get_user_message(self):
         prompt = self.config.user_message_label
         color = self.config.you_color
 
@@ -63,7 +96,26 @@ class View:
             show_default=False,
         )
 
-    def print_reply(self, reply: Error | CompletionResult):
+    def message_output(self, content: str, title: str, color: str | None):
+        indent = self.config.indent
+
+        self.console.print(_colorized(f"{title}:", color))
+        self.console.print(Padding(content, (0, 0, 1, indent)))
+
+    def save_file_prompt(self) -> bool:
+        text = self.config.save_chat_text
+        color = self.config.you_color
+
+        return Confirm.ask(_colorized(text, color))
+
+    def file_list_output(self, files: PathGenerator):
+        for index, file in enumerate(files):
+            echo(f"[{index}] {file.stem}")
+
+    def toggle_spinner(self):
+        next(self._spinner)
+
+    def reply_output(self, reply: Error | CompletionResult):
         if isinstance(reply, Error):
             self._error_output(reply)
 
@@ -96,27 +148,6 @@ class View:
             self.config.error_message_label,
             self.config.error_color,
         )
-
-    def save_file_prompt(
-        self,
-    ) -> bool:
-        text = self.config.save_chat_text
-        color = self.config.you_color
-
-        return Confirm.ask(_colorized(text, color))
-
-    def file_list_output(self, files: Generator[Path, None, None]):
-        for index, file in enumerate(files):
-            echo(f"[{index}] {file.stem}")
-
-    def message_output(self, content: str, title: str, color: str | None):
-        indent = self.config.indent
-
-        self.console.print(_colorized(f"{title}:", color))
-        self.console.print(Padding(content, (0, 0, 1, indent)))
-
-    def toggle_spinner(self):
-        next(self._spinner)
 
     def _spinner_generator(self):
         status = Status(
