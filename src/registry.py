@@ -5,9 +5,8 @@ from .chat.commands import chat_app
 from .config import config_app
 
 
-sub_apps: list[Typer] = []
-
-
-sub_apps.append(open_ai_app)
-sub_apps.append(chat_app)
-sub_apps.append(config_app)
+sub_apps: list[Typer] = [
+    open_ai_app,
+    chat_app,
+    config_app,
+]
