@@ -2,7 +2,7 @@ from typer import Typer, Option
 
 from .models import Chat
 from .chat import conversation, Completion
-from .view import CLIView, CLIConfig
+from .view import CLIView, CLIConfig, View
 from .config import ChatModels
 from ..storage import storage
 from ..openai.api import get_api
@@ -16,7 +16,7 @@ chat_app = Typer(
 api = get_api()
 config = read_config()
 completion = Completion(api, config.chat)
-view = CLIView(CLIConfig())
+view: View = CLIView(CLIConfig())
 
 
 @chat_app.callback()

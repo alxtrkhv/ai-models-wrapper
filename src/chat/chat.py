@@ -1,4 +1,4 @@
-from .view import IView
+from .view import View
 from .models import Message, MessageRole, Chat, CompletionResult, CompletionUsage, Error
 from ..config import ChatConfig
 
@@ -28,7 +28,7 @@ class Completion:
         )
 
 
-def conversation(chat: Chat, completion: Completion, view: IView):
+def conversation(chat: Chat, completion: Completion, view: View):
     system_message = view.get_system_message()
     if system_message:
         chat.messages.append(

@@ -1,6 +1,5 @@
 from pathlib import Path
-from typing import Sequence
-from abc import ABC, abstractmethod
+from typing import Sequence, Protocol
 
 from rich.status import Status
 from rich.console import Console
@@ -38,37 +37,30 @@ def _colorized(text: str, color: str | None):
     return result
 
 
-class IView(ABC):
-    @abstractmethod
-    def get_system_message(self):
-        return ""
+class View(Protocol):
+    def get_system_message(self) -> str:
+        ...
 
-    @abstractmethod
-    def get_user_message(self):
-        return ""
+    def get_user_message(self) -> str:
+        ...
 
-    @abstractmethod
-    def message_output(self, content: str, title: str, color: str | None):
-        pass
+    def message_output(self, content: str, title: str, color: str | None) -> None:
+        ...
 
-    @abstractmethod
-    def file_list_output(self, files: Sequence[Path]):
-        pass
+    def file_list_output(self, files: Sequence[Path]) -> None:
+        ...
 
-    @abstractmethod
     def save_file_prompt(self) -> bool:
-        return False
+        ...
 
-    @abstractmethod
-    def toggle_spinner(self):
-        pass
+    def toggle_spinner(self) -> None:
+        ...
 
-    @abstractmethod
-    def reply_output(self, reply: Error | CompletionResult):
-        pass
+    def reply_output(self, reply: Error | CompletionResult) -> None:
+        ...
 
 
-class CLIView(IView):
+class CLIView():
     def __init__(self, config: CLIConfig):
         self.config = config
         self.console = Console()
