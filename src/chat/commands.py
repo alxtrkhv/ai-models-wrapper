@@ -30,7 +30,7 @@ def ask(prompt: str):
     if api is None:
         return
 
-    view._completion_output(completion.without_context(prompt))
+    view.reply_output(completion.without_context(prompt))
 
 
 @chat_app.command()
