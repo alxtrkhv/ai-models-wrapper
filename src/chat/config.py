@@ -12,4 +12,4 @@ class ChatModels(str, Enum):
 
 
 class ChatConfig(BaseModel):
-    model: ChatModels = ChatModels.GPT3_LARGE
+    model: ChatModels = ChatModels.GPT4
