@@ -10,6 +10,7 @@ class Error(BaseModel):
 
 
 class MessageRole(StrEnum):
+    NONE = "none"
     USER = "user"
     ASSISTANT = "assistant"
     SYSTEM = "system"
@@ -17,9 +18,8 @@ class MessageRole(StrEnum):
 
 
 class Message(BaseModel):
-    content: str
+    content: str | None
     role: MessageRole
-    name: str | None = None
     function_call: dict | None = None
 
 
